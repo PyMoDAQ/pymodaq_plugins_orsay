@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets
+import sys
 import numpy as np
 from pymodaq.daq_viewer.utility_classes import DAQ_Viewer_base
 from easydict import EasyDict as edict
@@ -7,7 +8,7 @@ from pymodaq.daq_utils.daq_utils import ThreadCommand, getLineInfo, DataFromPlug
 from enum import IntEnum
 import ctypes
 from pymodaq.daq_viewer.utility_classes import comon_parameters
-
+import importlib
 
 class Orsay_Camera_manufacturer(IntEnum):
     """
@@ -379,8 +380,8 @@ class DAQ_2DViewer_OrsayCamera(DAQ_Viewer_base):
             elif param.name() == 'set_point':
                 self.controller.setTemperature(param.value())
             elif param.name() == 'manufacturer':
-                mod = sys.modules[__name__]  # current module
-                models = getattr(mod, '{:s}_models'.format(param.name()))
+                mod = importlib.import_module(__file__)
+                models = getattr(mod, f'{param.value()}_models')
                 if models == []:
                     models = ['']
                 self.settings.child(('model')).setOpts(limits=models)
@@ -587,7 +588,7 @@ class DAQ_2DViewer_OrsayCamera(DAQ_Viewer_base):
         """
         self.status.update(edict(initialized=False, info="", x_axis=None, y_axis=None, controller=None))
         try:
-            from pymodaq_plugins.hardware.STEM import orsaycamera
+            from ...hardware.STEM import orsaycamera
             manufacturer = Orsay_Camera_manufacturer[self.settings.child(('manufacturer')).value()].value
             if self.settings.child(('controller_status')).value() == "Slave":
                 if controller is None:
