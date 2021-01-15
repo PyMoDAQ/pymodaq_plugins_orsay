@@ -1,4 +1,4 @@
-from pymodaq_plugins.hardware.STEM import orsayscan
+from . import orsayscan
 
 class OrsayScanPosition(orsayscan.orsayScan):
 

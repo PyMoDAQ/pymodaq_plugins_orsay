@@ -12,11 +12,11 @@ import pyqtgraph.parametertree.parameterTypes as pTypes
 from pymodaq.daq_utils.parameter import utils as putils
 from pymodaq.daq_viewer.utility_classes import comon_parameters
 
-from pymodaq_plugins.hardware.STEM import orsayscan
-from pymodaq_plugins.hardware.STEM.orsayscan_position import OrsayScanPosition
+from ...hardware.STEM import orsayscan
+from ...hardware.STEM.orsayscan_position import OrsayScanPosition
 
 try:
-    from pymodaq_plugins.daq_viewer_plugins.plugins_2D.daq_2Dviewer_OrsayCamera import DAQ_2DViewer_OrsayCamera
+    from ..plugins_2D.daq_2Dviewer_OrsayCamera import DAQ_2DViewer_OrsayCamera
 
     is_Orsay_camera = True
     params_camera = DAQ_2DViewer_OrsayCamera.params

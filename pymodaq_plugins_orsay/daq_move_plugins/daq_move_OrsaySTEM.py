@@ -4,8 +4,8 @@ from pymodaq.daq_utils.daq_utils import ThreadCommand, getLineInfo
 from easydict import EasyDict as edict
 
 
-from pymodaq_plugins.hardware.STEM import orsayscan
-from pymodaq_plugins.hardware.STEM.orsayscan_position import OrsayScanPosition
+from ..hardware.STEM import orsayscan
+from ..hardware.STEM.orsayscan_position import OrsayScanPosition
 
 class DAQ_Move_OrsaySTEM(DAQ_Move_base):
     """
