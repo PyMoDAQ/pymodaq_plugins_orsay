@@ -1,18 +1,39 @@
-# PyMoDAQ Orsay STEM and Camera plugin
-Can be used to control Ropers or Princeton Instruments
-Can be used to control STEM (Scanning Tunnel Electron Microscope) using the HOUDs 2 hardware module to drive
-coils within a STEM
+pymodaq_plugins_orsay  (OrsaySTEM and Cameras)
+###############
 
-From Marcel Tencé source code
+.. image:: https://img.shields.io/pypi/v/pymodaq_plugins.svg
+   :target: https://pypi.org/project/pymodaq_plugins/
+   :alt: Latest Version
 
-PyMoDAQ, Modular Data Acquisition with Python, is a set of **python** modules used to perform automated
-measurements. This repository contains the NI DAQmx plugins compatible with PyMoDAQ to generate and acquire
-signals using National Instruments acquisition cards
+.. image:: https://readthedocs.org/projects/pymodaq/badge/?version=latest
+   :target: https://pymodaq.readthedocs.io/en/stable/?badge=latest
+   :alt: Documentation Status
 
-PyMoDAQ repo: https://github.com/CEMES-CNRS
-Plugin repo: https://github.com/CEMES-CNRS/pymodaq_plugins_orsay
+.. image:: https://github.com/CEMES-CNRS/pymodaq_plugins/workflows/Upload%20Python%20Package/badge.svg
+    :target: https://github.com/CEMES-CNRS/pymodaq_plugins
 
-For an exhaustive list of the available plugins, see https://github.com/CEMES-CNRS/pymodaq_plugin_manager/blob/main/pymodaq_plugin_manager/doc/PluginList.md
+PyMoDAQ Orsay STEM and Camera plugin\r\nCan be used to control Ropers or Princeton
+Cameras\r\nCan be used to control STEM (Scanning Tunnel Electron Microscope)
+using the HOUDs 2 hardware module to drive coils within a STEM\n\nFrom Marcel Tence
+source code from LPS Laboratory at Orsay University, France
+
+Authors
+=======
+
+* Sebastien J. Weber
+
+Instruments
+===========
+Below is the list of instruments included in this plugin
+
+Actuators
++++++++++
+
+* **OrsaySTEM**: X and Y electron beam displacement in a STEM (slave of the OrsaySTEM 2DViewer)
 
 
-Documentation: http://pymodaq.cnrs.fr/
+Viewer2D
+++++++++
+
+* **OrsaySTEM**: STEM Imaging (even hyperspectral imaging)
+* **OrsayCamera**: Cameras from Ropers and Princeton Instruments
