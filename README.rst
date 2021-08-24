@@ -1,5 +1,5 @@
 pymodaq_plugins_orsay  (OrsaySTEM and Cameras)
-###############
+##############################################
 
 .. image:: https://img.shields.io/pypi/v/pymodaq_plugins.svg
    :target: https://pypi.org/project/pymodaq_plugins/
