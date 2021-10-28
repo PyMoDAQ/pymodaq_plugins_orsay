@@ -1,5 +1,5 @@
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import QThread, pyqtSlot
+from qtpy import QtWidgets
+from qtpy.QtCore import QThread, Slot
 import numpy as np
 from pymodaq.daq_viewer.utility_classes import DAQ_Viewer_base
 from easydict import EasyDict as edict
@@ -345,13 +345,13 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
 
         self.emit_data_live()
 
-    @pyqtSlot(list)
+    @Slot(list)
     def spim_done(self, data_spectrum_spim):
         self.data_spectrum_spim_ready = True
         self.data_spectrum_spim = data_spectrum_spim
         # self.emit_data()
 
-    @pyqtSlot(list)
+    @Slot(list)
     def spectrum_done(self, data_spectrum_spim):
         self.data_spectrum_ready = True
         self.data_spectrum_spim = data_spectrum_spim
@@ -425,7 +425,7 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
 
             self.data_grabed_signal_temp.emit(self.data_stem_STEM_as_reference + data_stem + self.data_spectrum_spim)
 
-    @pyqtSlot(list)
+    @Slot(list)
     def emit_data_live(self):
         """
         temporary datas emitter when acquisition is running

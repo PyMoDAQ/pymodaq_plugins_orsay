@@ -11,7 +11,7 @@ import time
 import python_lib as mylib
 import matplotlib.pyplot as plt
 from PyMoDAQ.DAQ_Utils.plotting.image_view_multicolor.image_view_multicolor import Image_View_Multicolor
-from PyQt5 import QtWidgets
+from qtpy import QtWidgets
 from pyqtgraph.dockarea import DockArea
 CCDSIZEX = 1600
 CCDSIZEY = 200
