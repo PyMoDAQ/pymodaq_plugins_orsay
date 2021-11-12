@@ -80,7 +80,7 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
                 {'title': 'Line averaging:', 'name': 'line_averaging', 'type': 'int', 'min': 1, 'value': 1,
                  'readonly': True},
                 {'title': 'Scan mode:', 'name': 'scan_mode', 'type': 'list', 'value': 'Normal',
-                 'values': ['Normal', 'Random', 'Ebm']},
+                 'limits': ['Normal', 'Random', 'Ebm']},
             ]},
             {'title': 'Mag. Rot.:', 'name': 'mag_rot', 'type': 'group', 'children': [
                 {'title': 'Field:', 'name': 'field', 'type': 'slide', 'value': 1e-7, 'limits': [1e-7, 1],
@@ -89,8 +89,8 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
                  'subtype': 'linear'},
             ]},
             {'title': 'Inputs:', 'name': 'inputs', 'type': 'group', 'children': [
-                {'title': 'Input 1:', 'name': 'input1', 'type': 'list', 'values': []},
-                {'title': 'Input 2:', 'name': 'input2', 'type': 'list', 'values': []},
+                {'title': 'Input 1:', 'name': 'input1', 'type': 'list', 'limits': []},
+                {'title': 'Input 2:', 'name': 'input2', 'type': 'list', 'limits': []},
             ]},
             {'title': 'Times:', 'name': 'times', 'type': 'group', 'children': [
                 {'title': 'Live Time (µs):', 'name': 'pixel_time_live', 'type': 'slide', 'value': 10, 'subtype': 'log',

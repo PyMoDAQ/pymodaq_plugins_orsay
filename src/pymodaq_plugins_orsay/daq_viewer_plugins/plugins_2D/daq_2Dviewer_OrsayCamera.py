@@ -305,12 +305,12 @@ class DAQ_2DViewer_OrsayCamera(DAQ_Viewer_base):
     """
     params = comon_parameters + [
         {'title': 'Simulated camera:', 'name': 'simulated', 'type': 'bool', 'value': False, 'default': False},
-        {'title': 'Manufacturer:', 'name': 'manufacturer', 'type': 'list', 'values': Orsay_Camera_manufacturer.names(),
+        {'title': 'Manufacturer:', 'name': 'manufacturer', 'type': 'list', 'limits': Orsay_Camera_manufacturer.names(),
          'value': 'Ropers'},
-        {'title': 'Model:', 'name': 'model', 'type': 'list', 'values': Ropers_models, 'value': 'KURO: 1200B'},
+        {'title': 'Model:', 'name': 'model', 'type': 'list', 'limits': Ropers_models, 'value': 'KURO: 1200B'},
         {'title': 'SN:', 'name': 'serialnumber', 'type': 'str', 'value': ''},
         {'title': 'Mode Settings:', 'name': 'camera_mode_settings', 'type': 'group', 'expanded': True, 'children': [
-            {'title': 'Mode:', 'name': 'camera_mode', 'type': 'list', 'values': Orsay_Camera_mode.names()},
+            {'title': 'Mode:', 'name': 'camera_mode', 'type': 'list', 'limits': Orsay_Camera_mode.names()},
             {'title': 'Nx:', 'name': 'spim_x', 'type': 'int', 'value': 10, 'min': 1},
             {'title': 'Ny:', 'name': 'spim_y', 'type': 'int', 'value': 10, 'min': 1},
         ]},
