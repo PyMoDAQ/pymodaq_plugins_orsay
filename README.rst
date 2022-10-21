@@ -9,8 +9,8 @@ pymodaq_plugins_orsay  (OrsaySTEM and Cameras)
    :target: https://pymodaq.readthedocs.io/en/stable/?badge=latest
    :alt: Documentation Status
 
-.. image:: https://github.com/CEMES-CNRS/pymodaq_plugins/workflows/Upload%20Python%20Package/badge.svg
-    :target: https://github.com/CEMES-CNRS/pymodaq_plugins
+.. image:: https://github.com/PyMoDAQ/pymodaq_plugins/workflows/Upload%20Python%20Package/badge.svg
+    :target: https://github.com/PyMoDAQ/pymodaq_plugins
 
 PyMoDAQ Orsay STEM and Camera plugin\r\nCan be used to control Ropers or Princeton
 Cameras\r\nCan be used to control STEM (Scanning Tunnel Electron Microscope)

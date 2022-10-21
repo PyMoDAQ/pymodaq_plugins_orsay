@@ -1,13 +1,13 @@
 from qtpy import QtWidgets
 import sys
 import numpy as np
-from pymodaq.daq_viewer.utility_classes import DAQ_Viewer_base
+from pymodaq.control_modules.viewer_utility_classes import DAQ_Viewer_base
 from easydict import EasyDict as edict
 from collections import OrderedDict
 from pymodaq.daq_utils.daq_utils import ThreadCommand, getLineInfo, DataFromPlugins, Axis
 from enum import IntEnum
 import ctypes
-from pymodaq.daq_viewer.utility_classes import comon_parameters
+from pymodaq.control_modules.viewer_utility_classes import comon_parameters
 import importlib
 
 class Orsay_Camera_manufacturer(IntEnum):

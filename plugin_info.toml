@@ -2,7 +2,7 @@
 
 [plugin-info]
 SHORT_PLUGIN_NAME = 'orsay'  #for instance daqmx
-package-url = 'https://github.com/CEMES-CNRS/pymodaq_plugins_orsay' #to modify
+package-url = 'https://github.com/PyMoDAQ/pymodaq_plugins_orsay' #to modify
 description = 'PyMoDAQ Orsay STEM and Camera plugin to control Ropers or Princeton Cameras and STEM (Scanning Tunnel Electron Microscope) using the HOUDs2 electronic module '
 
 author = 'Sébastien Weber'

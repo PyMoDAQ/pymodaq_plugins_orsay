@@ -1,7 +1,7 @@
 from qtpy import QtWidgets
 from qtpy.QtCore import QThread, Slot
 import numpy as np
-from pymodaq.daq_viewer.utility_classes import DAQ_Viewer_base
+from pymodaq.control_modules.viewer_utility_classes import DAQ_Viewer_base
 from easydict import EasyDict as edict
 from collections import OrderedDict
 from pymodaq.daq_utils.daq_utils import ThreadCommand, getLineInfo, DataFromPlugins, Axis
@@ -10,7 +10,7 @@ import ctypes
 from pyqtgraph.parametertree import Parameter, ParameterTree
 import pyqtgraph.parametertree.parameterTypes as pTypes
 from pymodaq.daq_utils.parameter import utils as putils
-from pymodaq.daq_viewer.utility_classes import comon_parameters
+from pymodaq.control_modules.viewer_utility_classes import comon_parameters
 
 from ...hardware.STEM import orsayscan
 from ...hardware.STEM.orsayscan_position import OrsayScanPosition
