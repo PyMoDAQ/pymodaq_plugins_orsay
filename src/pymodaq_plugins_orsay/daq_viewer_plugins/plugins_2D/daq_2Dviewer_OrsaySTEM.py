@@ -4,12 +4,12 @@ import numpy as np
 from pymodaq.control_modules.viewer_utility_classes import DAQ_Viewer_base
 from easydict import EasyDict as edict
 from collections import OrderedDict
-from pymodaq.daq_utils.daq_utils import ThreadCommand, getLineInfo, DataFromPlugins, Axis
+from pymodaq.utils.daq_utils import ThreadCommand, getLineInfo, DataFromPlugins, Axis
 from enum import IntEnum
 import ctypes
 from pyqtgraph.parametertree import Parameter, ParameterTree
 import pyqtgraph.parametertree.parameterTypes as pTypes
-from pymodaq.daq_utils.parameter import utils as putils
+from pymodaq.utils.parameter import utils as putils
 from pymodaq.control_modules.viewer_utility_classes import comon_parameters
 
 from ...hardware.STEM import orsayscan
@@ -103,17 +103,16 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
 
     def __init__(self, parent=None, params_state=None):
 
-        super(DAQ_2DViewer_OrsaySTEM, self).__init__(parent,
-                                                     params_state)  # initialize base class with commom attributes and methods
+        super().__init__(parent,  params_state)  # initialize base class with commom attributes and methods
 
-        self.settings.child(('do_hyperspectroscopy')).show(self.is_Orsay_camera)
-        self.settings.child(('hyperspectroscopy')).show(self.is_Orsay_camera)
+        self.settings.child('do_hyperspectroscopy').show(self.is_Orsay_camera)
+        self.settings.child('hyperspectroscopy').show(self.is_Orsay_camera)
         if self.is_Orsay_camera:
             self.camera = DAQ_2DViewer_OrsayCamera(parent=parent,
-                                                   params_state=self.settings.child(('hyperspectroscopy')).saveState())
+                                                   params_state=self.settings.child('hyperspectroscopy').saveState())
         else:
             self.camera = None
-        self.settings.child(('hyperspectroscopy')).show(False)
+        self.settings.child('hyperspectroscopy').show(False)
 
         self.data_spectrum_spim_ready = False
         self.data_stem_ready = False
@@ -138,15 +137,15 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
         self.data_spectrum_spim = None  # list of ordered dict received from the camera object
 
     def mult_image(self):
-        Nx = self.settings.child('stem_settings', 'pixels_settings', 'Nx').value()
-        Ny = self.settings.child('stem_settings', 'pixels_settings', 'Ny').value()
+        Nx = self.settings['stem_settings', 'pixels_settings', 'Nx']
+        Ny = self.settings['stem_settings', 'pixels_settings', 'Ny']
         self.settings.child('stem_settings', 'pixels_settings', 'Nx').setValue(2 * Nx)
         self.settings.child('stem_settings', 'pixels_settings', 'Ny').setValue(2 * Ny)
         self.init_data(2 * Nx, 2 * Ny)
 
     def divide_image(self):
-        Nx = self.settings.child('stem_settings', 'pixels_settings', 'Nx').value()
-        Ny = self.settings.child('stem_settings', 'pixels_settings', 'Ny').value()
+        Nx = self.settings['stem_settings', 'pixels_settings', 'Nx']
+        Ny = self.settings['stem_settings', 'pixels_settings', 'Ny']
         self.settings.child('stem_settings', 'pixels_settings', 'Nx').setValue(max([1, int(Nx / 2)]))
         self.settings.child('stem_settings', 'pixels_settings', 'Ny').setValue(max([1, int(Ny / 2)]))
         self.init_data(max([1, int(Nx / 2)]), max([1, int(Ny / 2)]))
@@ -172,8 +171,8 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
                 if param.value():
                     self.mult_image()
                     param.setValue(False)
-                Nx = self.settings.child('stem_settings', 'pixels_settings', 'Nx').value()
-                Ny = self.settings.child('stem_settings', 'pixels_settings', 'Ny').value()
+                Nx = self.settings['stem_settings', 'pixels_settings', 'Nx']
+                Ny = self.settings['stem_settings', 'pixels_settings', 'Ny']
                 self.settings.child('stem_settings', 'spot_settings', 'spot_x').setOpts(bounds=(0, Nx - 1))
                 self.settings.child('stem_settings', 'spot_settings', 'spot_y').setOpts(bounds=(0, Ny - 1))
 
@@ -181,22 +180,22 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
                 if param.value():
                     self.divide_image()
                     param.setValue(False)
-                Nx = self.settings.child('stem_settings', 'pixels_settings', 'Nx').value()
-                Ny = self.settings.child('stem_settings', 'pixels_settings', 'Ny').value()
+                Nx = self.settings['stem_settings', 'pixels_settings', 'Nx']
+                Ny = self.settings['stem_settings', 'pixels_settings', 'Ny']
                 self.settings.child('stem_settings', 'spot_settings', 'spot_x').setOpts(bounds=(0, Nx - 1))
                 self.settings.child('stem_settings', 'spot_settings', 'spot_y').setOpts(bounds=(0, Ny - 1))
 
             elif param.name() == 'input1' or param.name() == 'input2':
-                input1 = self.settings.child('stem_settings', 'inputs', 'input1').value()
-                input2 = self.settings.child('stem_settings', 'inputs', 'input2').value()
+                input1 = self.settings['stem_settings', 'inputs', 'input1']
+                input2 = self.settings['stem_settings', 'inputs', 'input2']
                 self.stem_scan.SetInputs([self.inputs.index(input1), self.inputs.index(input2)])
                 self.spim_scan.SetInputs([self.inputs.index(input1), self.inputs.index(input2)])
 
             elif param.name() == 'Nx' or param.name() == 'Ny':
-                self.init_data(self.settings.child('stem_settings', 'pixels_settings', 'Nx').value(),
-                               self.settings.child('stem_settings', 'pixels_settings', 'Ny').value())
-                Nx = self.settings.child('stem_settings', 'pixels_settings', 'Nx').value()
-                Ny = self.settings.child('stem_settings', 'pixels_settings', 'Ny').value()
+                self.init_data(self.settings['stem_settings', 'pixels_settings', 'Nx'],
+                               self.settings['stem_settings', 'pixels_settings', 'Ny'])
+                Nx = self.settings['stem_settings', 'pixels_settings', 'Nx']
+                Ny = self.settings['stem_settings', 'pixels_settings', 'Ny']
                 self.settings.child('stem_settings', 'spot_settings', 'spot_x').setOpts(bounds=(0, Nx - 1))
                 self.settings.child('stem_settings', 'spot_settings', 'spot_y').setOpts(bounds=(0, Ny - 1))
 
@@ -204,7 +203,7 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
                 self.stem_scan.pixelTime = param.value() / 1e6
 
             elif param.name() == 'angle':
-                self.stem_scan.setScanRotation(self.settings.child('stem_settings', 'mag_rot', 'angle').value())
+                self.stem_scan.setScanRotation(self.settings['stem_settings', 'mag_rot', 'angle'])
                 self.get_set_field()
             elif param.name() == 'field':
                 self.get_set_field()
@@ -213,18 +212,18 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
                 if param.value():
                     data_stem_STEM_as_reference = self.data_stem.reshape((2, self.SIZEX, self.SIZEY)).astype(np.float64)
                     self.data_stem_STEM_as_reference = [
-                        DataFromPlugins(name=self.settings.child('stem_settings', 'inputs', 'input1').value(),
+                        DataFromPlugins(name=self.settings['stem_settings', 'inputs', 'input1'],
                                         data=[data_stem_STEM_as_reference[0]], dim='Data2D'),
-                        DataFromPlugins(name=self.settings.child('stem_settings', 'inputs', 'input2').value(),
+                        DataFromPlugins(name=self.settings['stem_settings', 'inputs', 'input2'],
                                         data=[data_stem_STEM_as_reference[1]], dim='Data2D'), ]
 
                 # init the viewers
                 self.emit_data_init()
 
                 if self.is_Orsay_camera:
-                    self.settings.child(('hyperspectroscopy')).show(param.value())
+                    self.settings.child('hyperspectroscopy').show(param.value())
                     if param.value():
-                        self.settings.child(('ROIselect')).show(True)
+                        self.settings.child('ROIselect').show(True)
                         self.settings.child('ROIselect', 'use_ROI').setValue(True)
                         self.settings.child('ROIselect', 'use_ROI').setOpts(readonly=True)
 
@@ -242,7 +241,7 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
                             # remove viewers related to camera
                             self.emit_data_temp()
 
-            elif param.name() in putils.iter_children(self.settings.child(('hyperspectroscopy')),
+            elif param.name() in putils.iter_children(self.settings.child('hyperspectroscopy'),
                                                       []):  # parameters related to camera
                 if self.camera is not None:
                     self.camera.commit_settings(param)
@@ -254,10 +253,10 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
     def update_live(self, live=False):
         if live:
             self.stem_scan.registerUnlockerA(self.fnunlockA_live)
-            self.stem_scan.pixelTime = self.settings.child('stem_settings', 'times', 'pixel_time_live').value() / 1e6
+            self.stem_scan.pixelTime = self.settings['stem_settings', 'times', 'pixel_time_live'] / 1e6
         else:
             self.stem_scan.registerUnlockerA(self.fnunlockA)
-            self.stem_scan.pixelTime = self.settings.child('stem_settings', 'times', 'pixel_time_capture').value() / 1e6
+            self.stem_scan.pixelTime = self.settings['stem_settings', 'times', 'pixel_time_capture'] / 1e6
 
     def dataLocker(self, gene, datatype, sx, sy, sz):
         """
@@ -273,8 +272,8 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
             11  float 32 bit
             12  double 64 bit
         """
-        sx[0] = self.settings.child('stem_settings', 'pixels_settings', 'Nx').value()
-        sy[0] = self.settings.child('stem_settings', 'pixels_settings', 'Ny').value()
+        sx[0] = self.settings['stem_settings', 'pixels_settings', 'Nx']
+        sy[0] = self.settings['stem_settings', 'pixels_settings', 'Ny']
         sz[0] = 2  # 2 inputs
         datatype[0] = 2
         return self.data_stem_pointer.value
@@ -293,8 +292,8 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
             11  float 32 bit
             12  double 64 bit
         """
-        sx[0] = self.settings.child('stem_settings', 'pixels_settings', 'Nx').value()
-        sy[0] = self.settings.child('stem_settings', 'pixels_settings', 'Ny').value()
+        sx[0] = self.settings['stem_settings', 'pixels_settings', 'Nx']
+        sy[0] = self.settings['stem_settings', 'pixels_settings', 'Ny']
         sz[0] = 2  # 2 inputs
         datatype[0] = 2
         return self.data_stem_pointer.value
@@ -367,11 +366,11 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
         # data_stem = self.data_stem.reshape((2, self.SIZEX,
         #                                     self.SIZEY)).astype(np.float64)
 
-        if not self.settings.child(('do_hyperspectroscopy')).value():
+        if not self.settings['do_hyperspectroscopy']:
             data_stem = [
-                DataFromPlugins(name=self.settings.child('stem_settings', 'inputs', 'input1').value(),
+                DataFromPlugins(name=self.settings['stem_settings', 'inputs', 'input1'],
                                 data=[self.data_stem_current[0]], dim='Data2D'),
-                DataFromPlugins(name=self.settings.child('stem_settings', 'inputs', 'input2').value(),
+                DataFromPlugins(name=self.settings['stem_settings', 'inputs', 'input2'],
                                 data=[self.data_stem_current[1]], dim='Data2D'), ]
             if self.data_stem_ready:
                 if self.stem_scan_finished:
@@ -381,9 +380,9 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
                     self.data_grabed_signal_temp.emit(data_stem)
         else:
             data_stem = [
-                DataFromPlugins(name='SPIM ' + self.settings.child('stem_settings', 'inputs', 'input1').value(),
+                DataFromPlugins(name='SPIM ' + self.settings['stem_settings', 'inputs', 'input1'],
                                 data=[self.data_stem_current[0]], dim='Data2D'),
-                DataFromPlugins(name='SPIM ' + self.settings.child('stem_settings', 'inputs', 'input2').value(),
+                DataFromPlugins(name='SPIM ' + self.settings['stem_settings', 'inputs', 'input2'],
                                 data=[self.data_stem_current[1]], dim='Data2D'), ]
             if self.data_spectrum_spim_ready and self.stem_scan_finished:  # all data have been taken
                 self.spim_scan.stopImaging(True)
@@ -396,30 +395,30 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
     def emit_data_init(self):
         data_stem = self.data_stem.reshape((2, self.SIZEX,
                                             self.SIZEY)).astype(np.float64)
-        if not self.settings.child(('do_hyperspectroscopy')).value():
+        if not self.settings['do_hyperspectroscopy']:
             data_stem = [
-                DataFromPlugins(name=self.settings.child('stem_settings', 'inputs', 'input1').value(),
+                DataFromPlugins(name=self.settings['stem_settings', 'inputs', 'input1'],
                                 data=[data_stem[0]],
                                 dim='Data2D'),
-                DataFromPlugins(name=self.settings.child('stem_settings', 'inputs', 'input2').value(),
+                DataFromPlugins(name=self.settings['stem_settings', 'inputs', 'input2'],
                                 data=[data_stem[1]],
                                 dim='Data2D'), ]
 
             self.data_grabed_signal_temp.emit(data_stem)
         else:
             data_stem = [
-                DataFromPlugins(name='SPIM ' + self.settings.child('stem_settings', 'inputs', 'input1').value(),
+                DataFromPlugins(name='SPIM ' + self.settings['stem_settings', 'inputs', 'input1'],
                                 data=[data_stem[0]],
                                 dim='Data2D'),
-                DataFromPlugins(name='SPIM ' + self.settings.child('stem_settings', 'inputs', 'input2').value(),
+                DataFromPlugins(name='SPIM ' + self.settings['stem_settings', 'inputs', 'input2'],
                                 data=[data_stem[1]],
                                 dim='Data2D'), ]
             if self.data_stem_STEM_as_reference is None:
                 self.data_stem_STEM_as_reference = [
-                    DataFromPlugins(name=self.settings.child('stem_settings', 'inputs', 'input1').value(),
+                    DataFromPlugins(name=self.settings['stem_settings', 'inputs', 'input1'],
                                     data=[data_stem[0]],
                                     dim='Data2D'),
-                    DataFromPlugins(name=self.settings.child('stem_settings', 'inputs', 'input2').value(),
+                    DataFromPlugins(name=self.settings['stem_settings', 'inputs', 'input2'],
                                     data=[data_stem[1]],
                                     dim='Data2D'), ]
 
@@ -430,14 +429,14 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
         """
         temporary datas emitter when acquisition is running
         """
-        data_stem = self.data_stem.reshape((2, self.settings.child('stem_settings', 'pixels_settings', 'Ny').value(),
-                                            self.settings.child('stem_settings', 'pixels_settings',
-                                                                'Nx').value())).astype(np.float64)
+        data_stem = self.data_stem.reshape((2, self.settings['stem_settings', 'pixels_settings', 'Ny'],
+                                            self.settings['stem_settings', 'pixels_settings',
+                                                                'Nx'])).astype(np.float64)
         # print('livedata')
         self.data_grabed_signal_temp.emit([DataFromPlugins(
-            name=self.settings.child('stem_settings', 'inputs', 'input1').value(), data=[data_stem[0]], dim='Data2D'),
+            name=self.settings['stem_settings', 'inputs', 'input1'], data=[data_stem[0]], dim='Data2D'),
                                            DataFromPlugins(
-                                               name=self.settings.child('stem_settings', 'inputs', 'input2').value(),
+                                               name=self.settings['stem_settings', 'inputs', 'input2'],
                                                data=[data_stem[1]], dim='Data2D')]
                                           )
 
@@ -459,19 +458,19 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
 
     def init_data(self, Nx=None, Ny=None):
         # %%%%%% Initialize data: self.data_stem for the memory to store new data and self.data_stem_average to store the average data
-        if not self.settings.child(('do_hyperspectroscopy')).value():
+        if not self.settings['do_hyperspectroscopy']:
             self.SIZEX = Nx
             self.SIZEY = Ny
 
             self.stem_scan.setImageSize(Nx, Ny)
             self.stem_scan.setImageArea(Nx, Ny, 0, Nx, 0, Ny)
         else:
-            Nx = self.settings.child('hyperspectroscopy', 'camera_mode_settings', 'spim_x').value()
-            Ny = self.settings.child('hyperspectroscopy', 'camera_mode_settings', 'spim_y').value()
-            startx = self.settings.child('ROIselect', 'x0').value()
-            starty = self.settings.child('ROIselect', 'y0').value()
-            endx = startx + self.settings.child('ROIselect', 'width').value()
-            endy = starty + self.settings.child('ROIselect', 'height').value()
+            Nx = self.settings['hyperspectroscopy', 'camera_mode_settings', 'spim_x']
+            Ny = self.settings['hyperspectroscopy', 'camera_mode_settings', 'spim_y']
+            startx = self.settings['ROIselect', 'x0']
+            starty = self.settings['ROIselect', 'y0']
+            endx = startx + self.settings['ROIselect', 'width']
+            endy = starty + self.settings['ROIselect', 'height']
 
             self.SIZEX = Nx
             self.SIZEY = Ny
@@ -479,17 +478,17 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
 
         self.data_spectrum_spim = [DataFromPlugins(name='SPIM ',
                                                    data=[np.zeros((
-                                                                  self.settings.child('hyperspectroscopy', 'image_size',
-                                                                                      'Nx').value(),
-                                                                  self.settings.child('hyperspectroscopy',
+                                                                  self.settings['hyperspectroscopy', 'image_size',
+                                                                                      'Nx'],
+                                                                  self.settings['hyperspectroscopy',
                                                                                       'camera_mode_settings',
-                                                                                      'spim_y').value(),
-                                                                  self.settings.child('hyperspectroscopy',
+                                                                                      'spim_y'],
+                                                                  self.settings['hyperspectroscopy',
                                                                                       'camera_mode_settings',
-                                                                                      'spim_x').value()))],
+                                                                                      'spim_x']))],
                                                    dim='DataND'),
                                    DataFromPlugins(name='Spectrum', data=[np.zeros(
-                                       (self.settings.child('hyperspectroscopy', 'image_size', 'Nx').value(),))],
+                                       (self.settings['hyperspectroscopy', 'image_size', 'Nx'],))],
                                                    dim='Data1D')]
 
         self.data_stem = np.zeros((2 * Nx * Ny), dtype=np.int16)
@@ -533,15 +532,15 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
                 if status.initialized:
                     self.camera.settings.child('camera_mode_settings', 'camera_mode').setValue('SPIM')
                     self.camera.update_camera_mode('SPIM')
-                    self.camera.settings.child(('camera_mode_settings')).show(True)
-                    self.camera.settings.child(('binning_settings')).show(False)
+                    self.camera.settings.child('camera_mode_settings').show(True)
+                    self.camera.settings.child('binning_settings').show(False)
                     self.camera.data_grabed_signal_temp.connect(self.spectrum_done)
                     self.camera.data_grabed_signal.connect(self.spim_done)
                 else:
                     self.is_Orsay_camera = False
 
             # init STEM if present
-            if self.settings.child(('controller_status')).value() == "Slave":
+            if self.settings['controller_status'] == "Slave":
                 if controller is None:
                     raise Exception('no controller has been defined externally while this detector is a slave one')
                 else:
@@ -555,8 +554,8 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
             # get/set inputs
             self.list_inputs(self.stem_scan)
 
-            input1 = self.settings.child('stem_settings', 'inputs', 'input1').value()
-            input2 = self.settings.child('stem_settings', 'inputs', 'input2').value()
+            input1 = self.settings['stem_settings', 'inputs', 'input1']
+            input2 = self.settings['stem_settings', 'inputs', 'input2']
             self.stem_scan.SetInputs([self.inputs.index(input1), self.inputs.index(input2)])
             self.spim_scan.SetInputs([self.inputs.index(input1), self.inputs.index(input2)])
 
@@ -575,8 +574,8 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
             self.spim_scan.registerUnlockerA(self.SPIM_funlockA)
 
             # %%%%%%%%%% set initial scan image size
-            Nx = self.settings.child('stem_settings', 'pixels_settings', 'Nx').value()
-            Ny = self.settings.child('stem_settings', 'pixels_settings', 'Ny').value()
+            Nx = self.settings['stem_settings', 'pixels_settings', 'Nx']
+            Ny = self.settings['stem_settings', 'pixels_settings', 'Ny']
             self.stem_scan.setImageSize(Nx, Ny)
             self.init_data(Nx, Ny)
 
@@ -584,8 +583,8 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
             self.emit_data_init()
 
             # %%%%%%%%%%% set pixel time
-            self.stem_scan.pixelTime = self.settings.child('stem_settings', 'times', 'pixel_time_live').value() / 1e6
-            self.stem_scan.setScanRotation(self.settings.child('stem_settings', 'mag_rot', 'angle').value())
+            self.stem_scan.pixelTime = self.settings['stem_settings', 'times', 'pixel_time_live'] / 1e6
+            self.stem_scan.setScanRotation(self.settings['stem_settings', 'mag_rot', 'angle'])
             self.get_set_field()
 
             # %%%%%%% init axes from image
@@ -604,7 +603,7 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
 
     def get_set_field(self):
         self.max_field = self.stem_scan.GetMaxFieldSize()
-        field = self.settings.child('stem_settings', 'mag_rot', 'field').value()
+        field = self.settings['stem_settings', 'mag_rot', 'field']
 
         self.settings.child('stem_settings', 'mag_rot', 'field').setLimits(
             [self.settings.child('stem_settings', 'mag_rot', 'field').opts['limits'][0], self.max_field])
@@ -686,30 +685,30 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
                 self.update_live(kwargs['live'])
 
             mode = self.settings.child('stem_settings', 'pixels_settings', 'scan_mode').opts['limits'].index(
-                self.settings.child('stem_settings', 'pixels_settings', 'scan_mode').value())
+                self.settings['stem_settings', 'pixels_settings', 'scan_mode'])
 
-            if self.settings.child(('do_hyperspectroscopy')).value():
+            if self.settings['do_hyperspectroscopy']:
                 self.init_data()
                 self.spim_scan.setScanClock(0)
-                self.spim_scan.pixelTime = self.camera.settings.child('exposure').value()
-                self.spim_scan.startSpim(mode, self.settings.child('stem_settings', 'pixels_settings',
-                                                                   'line_averaging').value(), Nspectra=1, save2D=False)
+                self.spim_scan.pixelTime = self.camera.settings['exposure']
+                self.spim_scan.startSpim(mode, self.settings['stem_settings', 'pixels_settings',
+                                                                   'line_averaging'], Nspectra=1, save2D=False)
                 self.camera.grab(Naverage, **kwargs)
             else:
-                if self.settings.child('ROIselect', 'use_ROI').value():
-                    startx = self.settings.child('ROIselect', 'x0').value()
-                    starty = self.settings.child('ROIselect', 'y0').value()
-                    width = self.settings.child('ROIselect', 'width').value()
-                    height = self.settings.child('ROIselect', 'height').value()
+                if self.settings['ROIselect', 'use_ROI']:
+                    startx = self.settings['ROIselect', 'x0']
+                    starty = self.settings['ROIselect', 'y0']
+                    width = self.settings['ROIselect', 'width']
+                    height = self.settings['ROIselect', 'height']
                     endx = startx + width
                     endy = starty + height
                     self.stem_scan.setImageArea(width, height, startx, endx, starty, endy)
                 else:
-                    width = self.settings.child('stem_settings', 'pixels_settings', 'Nx').value()
-                    height = self.settings.child('stem_settings', 'pixels_settings', 'Ny').value()
+                    width = self.settings['stem_settings', 'pixels_settings', 'Nx']
+                    height = self.settings['stem_settings', 'pixels_settings', 'Ny']
                     self.stem_scan.setImageArea(width, height, 0, width, 0, height)
-                self.stem_scan.startImaging(mode, self.settings.child('stem_settings', 'pixels_settings',
-                                                                      'line_averaging').value())
+                self.stem_scan.startImaging(mode, self.settings['stem_settings', 'pixels_settings',
+                                                                      'line_averaging'])
 
             # self.stem_scan.stopImaging(False) #will stop the acquisition when the image is done
 
@@ -725,13 +724,13 @@ class DAQ_2DViewer_OrsaySTEM(DAQ_Viewer_base):
         try:
             self.stem_scan.stopImaging(True)
             self.spim_scan.s
-            if self.settings.child(('do_hyperspectroscopy')).value():
+            if self.settings['do_hyperspectroscopy']:
                 self.camera.stop()
-            if self.settings.child('stem_settings', 'spot_settings', 'is_spot').value():
-                self.stem_scan.OrsayScanSetProbeAt(1, self.settings.child('stem_settings', 'spot_settings',
-                                                                          'spot_x').value(),
-                                                   self.settings.child('stem_settings', 'spot_settings',
-                                                                       'spot_y').value())
+            if self.settings['stem_settings', 'spot_settings', 'is_spot']:
+                self.stem_scan.OrsayScanSetProbeAt(1, self.settings['stem_settings', 'spot_settings',
+                                                                          'spot_x'],
+                                                   self.settings['stem_settings', 'spot_settings',
+                                                                       'spot_y'])
         except:
             pass
         return ""
