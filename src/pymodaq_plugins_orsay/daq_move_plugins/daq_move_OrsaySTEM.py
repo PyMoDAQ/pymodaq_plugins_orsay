@@ -1,8 +1,9 @@
 from qtpy.QtCore import QTimer
-from pymodaq.control_modules.move_utility_classes import DAQ_Move_base, comon_parameters_fun
+from pymodaq.control_modules.move_utility_classes import DAQ_Move_base, comon_parameters_fun, main, DataActuatorType
 
 from pymodaq.utils.daq_utils import ThreadCommand, getLineInfo
-from ..hardware.STEM.orsayscan_position import OrsayScanPosition
+from pymodaq_plugins_orsay.hardware.STEM.orsayscan_position import OrsayScanPosition
+from pymodaq.utils.data import DataActuator
 
 
 class DAQ_Move_OrsaySTEM(DAQ_Move_base):
@@ -19,6 +20,8 @@ class DAQ_Move_OrsaySTEM(DAQ_Move_base):
     is_multiaxes = True
     _axis_names = ['X', 'Y']
     _epsilon = 1
+    data_actuator_type = DataActuatorType['DataActuator']
+
 
     params = [{'title': 'Pixels:', 'name': 'pixels_settings', 'type': 'group', 'children': [
         {'title': 'Nx:', 'name': 'Nx', 'type': 'int', 'min': 1, 'value': 256},
@@ -57,7 +60,7 @@ class DAQ_Move_OrsaySTEM(DAQ_Move_base):
         self.settings.child('bounds', 'is_bounds').setValue(True)
         self.settings.child('bounds', 'min_bound').setValue(0)
 
-        if self.settings['multiaxes', 'axis'] == self.stage_names[0]:
+        if self.axis_name == self.axis_names[0]:
             self.settings.child('bounds', 'max_bound').setValue(sizex - 1)
         else:
             self.settings.child('bounds', 'max_bound').setValue(sizey - 1)
@@ -84,7 +87,7 @@ class DAQ_Move_OrsaySTEM(DAQ_Move_base):
                 self.settings.child('pixels_settings', 'Nx').setValue(sizex)
                 self.settings.child('pixels_settings', 'Ny').setValue(sizey)
 
-                if self.settings['multiaxes', 'axis'] == self.stage_names[0]:
+                if self.axis_name == self.axis_names[0]:
                     self.settings.child('bounds', 'max_bound').setValue(sizex - 1)
                 else:
                     self.settings.child('bounds', 'max_bound').setValue(sizey - 1)
@@ -103,9 +106,9 @@ class DAQ_Move_OrsaySTEM(DAQ_Move_base):
             self.controller.setImageSize(self.settings['pixels_settings', 'Nx'], self.settings['pixels_settings', 'Ny'])
             sizex, sizey = self.controller.getImageSize()
             self.controller.setImageArea(sizex, sizey, 0, sizex, 0, sizey)
-            if param.name() == 'Nx' and self.settings['multiaxes', 'axis'] == self.stage_names[0]:
+            if param.name() == 'Nx' and self.axis_name == self.axis_names[0]:
                 self.settings.child('bounds', 'max_bound').setValue(param.value() - 1)
-            elif param.name() == 'Ny' and self.settings['multiaxes', 'axis'] == self.stage_names[1]:
+            elif param.name() == 'Ny' and self.axis_name == self.axis_names[1]:
                 self.settings.child('bounds', 'max_bound').setValue(param.value() - 1)
 
     def close(self):
@@ -130,7 +133,7 @@ class DAQ_Move_OrsaySTEM(DAQ_Move_base):
         """
         self.move_done()
 
-    def check_position(self):
+    def get_actuator_value(self):
         """
             Get the current position from the hardware with scaling conversion.
 
@@ -143,27 +146,27 @@ class DAQ_Move_OrsaySTEM(DAQ_Move_base):
             --------
             DAQ_Move_base.get_position_with_scaling, daq_utils.ThreadCommand
         """
-        pos = self.current_position
+        pos = self.current_value
         self.emit_status(ThreadCommand('check_position', [pos]))
         return pos
 
-    def move_abs(self, position):
+    def move_abs(self, position: DataActuator):
         """
 
         """
         position = self.check_bound(position)
-        self.target_position = position
+        self.target_value = position
 
-        if self.settings['multiaxes', 'axis'] == self.stage_names[0]:
-            px = int(position)
+        if self.axis_name == self.axis_names[0]:
+            px = int(position.value())
             py = int(self.controller.y)
         else:
             px = int(self.controller.x)
-            py = int(position)
+            py = int(position.value())
 
         self.controller.OrsayScanSetProbeAt(1, px, py)
 
-        self.current_position = position  # no check of the current position is possible...
+        self.current_value = position  # no check of the current position is possible...
         self.poll_moving()
 
     def move_rel(self, position):
@@ -181,19 +184,19 @@ class DAQ_Move_OrsaySTEM(DAQ_Move_base):
             hardware.set_position_with_scaling, DAQ_Move_base.poll_moving
 
         """
-        position = self.check_bound(self.current_position + position) - self.current_position
-        self.target_position = position + self.current_position
+        position = self.check_bound(self.current_value + position) - self.current_value
+        self.target_value = position + self.current_value
 
-        if self.settings['multiaxes', 'axis'] == self.stage_names[0]:
-            px = int(self.target_position)
+        if self.axis_name == self.axis_names[0]:
+            px = int(self.target_value.value())
             py = int(self.controller.y)
         else:
             px = int(self.controller.x)
-            py = int(self.target_position)
+            py = int(self.target_value.value())
 
         self.controller.OrsayScanSetProbeAt(1, px, py)
 
-        self.current_position = self.target_position  # no check of the current position is possible...
+        self.current_value = self.target_value  # no check of the current position is possible...
         self.poll_moving()
 
     def move_home(self):
@@ -204,3 +207,7 @@ class DAQ_Move_OrsaySTEM(DAQ_Move_base):
             daq_utils.ThreadCommand
         """
         self.controller.OrsayScanSetProbeAt(1, 0, 0)
+
+
+if __name__ == '__main__':
+    main(__file__, init=False)

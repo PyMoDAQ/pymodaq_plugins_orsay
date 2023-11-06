@@ -3,8 +3,8 @@ from . import orsayscan
 
 class OrsayScanPosition(orsayscan.orsayScan):
 
-    def __init__(self, gene, scandllobject = 0):
-        super(OrsayScanPosition,self).__init__(gene,scandllobject)
+    def __init__(self, gene, scandllobject=0):
+        super().__init__(gene, scandllobject)
 
         self.x = 0
         self.y = 0

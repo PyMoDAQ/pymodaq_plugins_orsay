@@ -286,8 +286,8 @@ class DAQ_2DViewer_OrsayCamera(DAQ_Viewer_base):
         ]},
         {'title': 'Exposure (s):', 'name': 'exposure', 'type': 'float', 'value': 1, 'default': 0.1},
         {'title': 'Image size:', 'name': 'image_size', 'type': 'group', 'children': [
-            {'title': 'Nx:', 'name': 'Nx', 'type': 'int', 'value': 0, 'default': 0, 'readonly': True},
-            {'title': 'Ny:', 'name': 'Ny', 'type': 'int', 'value': 0, 'default': 0, 'readonly': True},
+            {'title': 'Nx:', 'name': 'Nx', 'type': 'int', 'value': 256, 'default': 256, 'readonly': True},
+            {'title': 'Ny:', 'name': 'Ny', 'type': 'int', 'value': 1024, 'default': 1024, 'readonly': True},
         ]},
         {'title': 'Temperature Settings:', 'name': 'temperature_settings', 'type': 'group', 'children': [
             {'title': 'Set Point:', 'name': 'set_point', 'type': 'float', 'value': -70, 'default': -70},
