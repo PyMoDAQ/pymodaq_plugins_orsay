@@ -167,7 +167,6 @@ class DAQ_Move_OrsaySTEM(DAQ_Move_base):
         self.controller.OrsayScanSetProbeAt(1, px, py)
 
         self.current_value = position  # no check of the current position is possible...
-        self.poll_moving()
 
     def move_rel(self, position):
         """
@@ -197,7 +196,6 @@ class DAQ_Move_OrsaySTEM(DAQ_Move_base):
         self.controller.OrsayScanSetProbeAt(1, px, py)
 
         self.current_value = self.target_value  # no check of the current position is possible...
-        self.poll_moving()
 
     def move_home(self):
         """
